@@ -44,6 +44,15 @@ class Maze {
         this.#player = {x: 0, y: 0};
     }
 
+    // Position of the player on the grid
+    get player(): Vec2 { return this.#player; }
+    set player(value: Vec2) { this.#player = value; }
+
+    // Whether the player has reached a finish square
+    get finished(): boolean {
+        return this.getCell(this.#player) == MazeSquare.FINISH;
+    }
+
     /**
      * Set the type of a cell in the maze
      * @param pos The position of the cell
@@ -60,10 +69,6 @@ class Maze {
     getCell(pos: Vec2): MazeSquare {
         return this.#grid[pos.y][pos.x];
     }
-
-    // Position of the player on the grid
-    get player(): Vec2 { return this.#player; }
-    set player(value: Vec2) { this.#player = value; }
 
     /**
      * Move the player relative to its current position. If it is not possible
