@@ -60,13 +60,13 @@ class MazeDisplay {
             for (let j = 0; j < this.maze.width; j++) {
                 let cell = document.createElement("div");
                 cell.classList.add("cell");
-                let color = "purple";
+                let classes: string[] = [];
                 switch (this.maze.getCell({x: j, y: i})) {
-                    case MazeSquare.EMPTY: color = "transparent"; break;
-                    case MazeSquare.WALL: color = "#f2f2f2"; break;
-                    case MazeSquare.FINISH: color = "#fca800"; break;
+                    case MazeSquare.EMPTY: classes.push("cell-empty"); break;
+                    case MazeSquare.WALL: classes.push("cell-wall"); break;
+                    case MazeSquare.FINISH: classes.push("cell-finish"); break;
                 }
-                cell.style.backgroundColor = color;
+                cell.classList.add(...classes);
                 row.append(cell);
             }
         }

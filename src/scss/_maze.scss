@@ -25,6 +25,10 @@
                     width: 1em;
                     height: 1em;
                     background-color: purple;
+
+                    &.cell-empty { background-color: transparent; }
+                    &.cell-wall { background-color: #eee; }
+                    &.cell-finish { background-color: orange; }
                 }
             }
 
