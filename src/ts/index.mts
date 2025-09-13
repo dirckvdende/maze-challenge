@@ -78,9 +78,23 @@ function getConstructor(): (direction: number) => number {
     return get;
 }
 
+/**
+ * Simulate current maze until finish has been reached
+ */
+function simulate() {
+    let doStep = () => {
+        step();
+        if (maze.finished)
+            return;
+        setTimeout(doStep, 100);
+    };
+    doStep();
+}
+
 document.getElementById("step-button")!.addEventListener("click", step);
+document.getElementById("simulate-button")!.addEventListener("click", simulate);
 
 kruskal(maze, {
-    extraEdgeChance: 1,
+    extraEdgeChance: .1,
 });
 display.update();
