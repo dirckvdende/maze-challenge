@@ -8,8 +8,11 @@ import { Maze } from "./maze.mjs";
 /**
  * Generate a maze using randomized kruskal
  * @param maze The maze object to put the maze in
+ * @param options Extra options for the kruskal algorithm
  */
-function kruskal(maze: Maze) {
+function kruskal(maze: Maze, options?: {extraEdgeChance?: number}) {
+    options ??= {};
+    options.extraEdgeChance ??= 0.0;
     maze.fillChambers();
     let edges: [Vec2, Vec2][] = [];
     for (let x = 0; x < maze.chamberWidth; x++) {
@@ -26,7 +29,8 @@ function kruskal(maze: Maze) {
         let [start, end] = edge;
         let dsuStart = start.y * maze.chamberWidth + start.x;
         let dsuEnd = end.y * maze.chamberHeight + end.x;
-        if (dsu.find(dsuStart) == dsu.find(dsuEnd))
+        if (dsu.find(dsuStart) == dsu.find(dsuEnd) && Math.random() >=
+        options.extraEdgeChance)
             continue;
         dsu.combine(dsuStart, dsuEnd);
         maze.connectChambers(start, end);

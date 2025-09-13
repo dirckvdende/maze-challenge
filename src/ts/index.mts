@@ -4,9 +4,11 @@ import { MazeDisplay } from "./maze/display.mjs";
 import { kruskal } from "./maze/generators.mjs";
 import { maskedEval } from "./util/masked_eval.mjs";
 import { Vec2 } from "./types.mjs";
+import { Memory } from "./memory.mjs";
 
 let maze = new Maze(25, 25);
 let display = new MazeDisplay(document.getElementById("maze")!, maze);
+let memory = new Memory();
 
 /**
  * Run the user code a single time
@@ -16,7 +18,13 @@ function step(): void {
     maskedEval(code, {
         move: moveConstructor(),
         get: getConstructor(),
+        loadBit: (index: number) => memory.load(index),
+        storeBit: (index: number, value: boolean) => memory.store(index, value),
+        loadInt: (index: number, size: number) => memory.loadUInt(index, size),
+        storeInt: (index: number, size: number, value: number) =>
+            memory.storeUInt(index, size, value),
     });
+    console.log("Bits used:", memory.size);
 }
 
 /**
@@ -72,5 +80,7 @@ function getConstructor(): (direction: number) => number {
 
 document.getElementById("step-button")!.addEventListener("click", step);
 
-kruskal(maze);
+kruskal(maze, {
+    extraEdgeChance: 1,
+});
 display.update();
