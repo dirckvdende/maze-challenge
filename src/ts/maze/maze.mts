@@ -4,9 +4,9 @@ import { Vec2 } from "../types.mjs";
 
 // Static square in a maze
 enum MazeSquare {
-    EMPTY,
-    WALL,
-    FINISH,
+    EMPTY = 0,
+    WALL = 1,
+    FINISH = 2,
 };
 
 /**
@@ -75,8 +75,13 @@ class Maze {
     /**
      * Get the type of a cell in the maze
      * @param pos The position of the cell
+     * @returns The type of square at the given position. If the cell is outside
+     * the maze this returns an empty cell
      */
     getCell(pos: Vec2): MazeSquare {
+        if (pos.x < 0 || pos.x >= this.#width || pos.y < 0
+        || pos.y >= this.#height)
+            return MazeSquare.EMPTY;
         return this.#grid[pos.y][pos.x];
     }
 
