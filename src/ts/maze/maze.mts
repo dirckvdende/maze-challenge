@@ -1,7 +1,6 @@
 
-export { Maze };
-
-type Vec2 = {x: number, y: number};
+export { Maze, MazeSquare };
+import { Vec2 } from "../types.mjs";
 
 // Static square in a maze
 enum MazeSquare {
@@ -52,6 +51,12 @@ class Maze {
     get finished(): boolean {
         return this.getCell(this.#player) == MazeSquare.FINISH;
     }
+
+    // Width of the maze
+    get width(): number { return this.#width; }
+
+    // Height of the maze
+    get height(): number { return this.#height; }
 
     /**
      * Set the type of a cell in the maze
