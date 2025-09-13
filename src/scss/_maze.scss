@@ -4,6 +4,15 @@
     display: flex;
     flex-direction: column;
 
+    .stats {
+        flex-shrink: 0;
+        flex-grow: 0;
+        text-align: center;
+        padding: .8em 0;
+        font-size: 1.1em;
+        color: #eee;
+    }
+
     .maze {
         flex-grow: 1;
         flex-shrink: 1;
@@ -64,6 +73,7 @@
             border: none;
             border-radius: .4em;
             cursor: pointer;
+            font-family: inherit;
 
             &:hover {
                 opacity: .7;

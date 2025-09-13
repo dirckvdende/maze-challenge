@@ -9,6 +9,7 @@ import { Memory } from "./memory.mjs";
 let maze = new Maze(25, 25);
 let display = new MazeDisplay(document.getElementById("maze")!, maze);
 let memory = new Memory();
+let stepCount = 0;
 
 /**
  * Run the user code a single time
@@ -24,7 +25,8 @@ function step(): void {
         storeInt: (index: number, size: number, value: number) =>
             memory.storeUInt(index, size, value),
     });
-    console.log("Bits used:", memory.size);
+    document.getElementById("stat-steps")!.innerText = String(++stepCount);
+    document.getElementById("stat-memory")!.innerText = String(memory.size);
 }
 
 /**
