@@ -64,7 +64,7 @@ class MazeDisplay {
                 switch (this.maze.getCell({x: j, y: i})) {
                     case MazeSquare.EMPTY: color = "transparent"; break;
                     case MazeSquare.WALL: color = "#f2f2f2"; break;
-                    case MazeSquare.FINISH: color = "yellow"; break;
+                    case MazeSquare.FINISH: color = "#fca800"; break;
                 }
                 cell.style.backgroundColor = color;
                 row.append(cell);
