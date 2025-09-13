@@ -5,6 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./src/css/index.css">
+
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <!-- Import javascript language support -->
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/javascript.min.js"></script>
+    
+    <!-- code-input -->
+    <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.3/code-input.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.3/code-input.min.css">
+    <!-- code-input plugins-->
+    <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.3/plugins/indent.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.3/plugins/auto-close-brackets.min.js"></script>
+
+    <script>
+        codeInput.registerTemplate("syntax-highlighted",
+            codeInput.templates.hljs(
+                hljs, [
+                    new codeInput.plugins.Indent(true, 4),
+                    new codeInput.plugins.AutoCloseBrackets(),
+                ]
+            )
+        );
+    </script>
 </head>
 <body>
     <div class="container">
@@ -18,7 +42,21 @@
                 <button>Generate maze</button>
             </div>
         </div>
-        <div class="code-container"></div>
+        <div class="code-container">
+            <code-input language="javascript" placeholder="code..." id="code"></code-input>
+            <script>
+                window.addEventListener("load", () => {
+                    let elt = document.getElementById("code")
+                    let content = localStorage.getItem("code")
+                    if (content == null)
+                        content = ""
+                    elt.value = content
+                    elt.addEventListener("keyup", () => {
+                        localStorage.setItem("code", elt.value)
+                    })
+                })
+            </script>
+        </div>
     </div>
     <script src="./src/js/index.mjs" type="module"></script>
 </body>
