@@ -1,7 +1,7 @@
 
 export { Simulator, ErrorLevel, ErrorMessage, SimStats };
 import { maskedEval } from "../util/masked_eval.mjs";
-import { Maze } from "./maze.mjs";
+import { Maze, MazeSquare } from "./maze.mjs";
 import { Vec2 } from "../types.mjs";
 import { Memory } from "../memory.mjs";
 
@@ -104,7 +104,10 @@ class Simulator {
                     return;
                 }
                 hasMoved = true;
-                let moved = this.#maze.move(this.#directionToDelta(direction));
+                let delta = this.#directionToDelta(direction);
+                if (delta == null)
+                    return;
+                let moved = this.#maze.move(delta);
                 if (!moved)
                     this.#stepErrors.push({
                         level: ErrorLevel.WARNING,
@@ -114,6 +117,8 @@ class Simulator {
             get: (direction: number) => {
                 let playerPos = this.#maze.player;
                 let delta = this.#directionToDelta(direction);
+                if (delta == null)
+                    return MazeSquare.EMPTY;
                 let targetPos = {
                     x: playerPos.x + delta.x,
                     y: playerPos.y + delta.y,
@@ -187,18 +192,22 @@ class Simulator {
      * Convert a direction given as a number 0 (up), 1 (right), 2 (down), 3
      * (left) to a position delta
      * @param direction The direction as a number from [0,1,2,3]
-     * @returns The delta with x and y. If the direction is invalid an error is
-     * thrown
+     * @returns The delta with x and y. If the direction is invalid null
+     * is returned
      */
-    #directionToDelta(direction: number): Vec2 {
+    #directionToDelta(direction: number): Vec2 | null {
         switch (direction) {
             case 0: return {x: 0, y: -1};
             case 1: return {x: 1, y: 0};
             case 2: return {x: 0, y: 1};
             case 3: return {x: -1, y: 0};
             default:
-                throw new Error(`Invalid direction ${direction}, should be in ` +
-                `[0,1,2,3]`);
+                this.#stepErrors.push({
+                    level: ErrorLevel.ERROR,
+                    text: `Invalid direction ${direction}, should be in ` +
+                    `[0,1,2,3]`,
+                });
+                return null;
         }
     }
 
