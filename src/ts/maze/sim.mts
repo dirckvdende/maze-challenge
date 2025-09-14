@@ -110,7 +110,24 @@ class Simulator {
                         level: ErrorLevel.WARNING,
                         text: "Player could not move because there was a wall",
                     });
-            }
+            },
+            get: (direction: number) => {
+                let playerPos = this.#maze.player;
+                let delta = this.#directionToDelta(direction);
+                let targetPos = {
+                    x: playerPos.x + delta.x,
+                    y: playerPos.y + delta.y,
+                };
+                return this.#maze.getCell(targetPos);
+            },
+            loadBit: (index: number) =>
+                this.#memory.load(index),
+            storeBit: (index: number, value: boolean) =>
+                this.#memory.store(index, value),
+            loadInt: (index: number, size: number) =>
+                this.#memory.loadUInt(index, size),
+            storeInt: (index: number, size: number, value: number) =>
+                this.#memory.storeUInt(index, size, value),
         });
         this.#stats.steps++;
     }
