@@ -153,13 +153,10 @@ class Simulator {
         // Copy options
         options = {...options};
         options.maxSteps ??= (options.timeout == undefined ? 10000 : Infinity);
-        let simStep = () => {
-            
-        };
         if (options.timeout == undefined) {
             let steps = 0;
             while (!this.#maze.finished && steps < options.maxSteps) {
-                simStep();
+                this.step();
                 steps++;
             }
         } else {
@@ -169,7 +166,7 @@ class Simulator {
                 if (steps >= (options.maxSteps ?? Infinity) ||
                 this.#maze.finished)
                     return;
-                simStep();
+                this.step();
                 steps++;
                 this.#simTimeout = setTimeout(handler, options.timeout ?? 1);
             }
