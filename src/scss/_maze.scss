@@ -37,7 +37,10 @@
 
                     &.cell-empty { background-color: transparent; }
                     &.cell-wall { background-color: #eee; }
-                    &.cell-finish { background-color: orange; }
+                    &.cell-finish {
+                        background-color: #ffaa00;
+                        background: linear-gradient(135deg,#ffaa00 0%, #ffaa00 50%, #c28100 50%, #c28100 100%);
+                    }
                 }
             }
 
