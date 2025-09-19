@@ -25,5 +25,5 @@ type TestGroup = {
  * A suite of test groups
  */
 type TestSuite = {
-    groups: TestGroup;
+    groups: TestGroup[];
 };

@@ -1,12 +1,13 @@
 
 import { Maze } from "./maze/maze.mjs";
 import { MazeDisplay } from "./maze/display.mjs";
-import { kruskal } from "./maze/generators.mjs";
+import { kruskal, randomDFS } from "./maze/generators.mjs";
 import { maskedEval } from "./util/masked_eval.mjs";
 import { Vec2 } from "./types.mjs";
 import { Memory } from "./memory.mjs";
+import { TestPopup } from "./tests/popup.mjs";
 
-let maze = new Maze(25, 25);
+let maze = new Maze(50);
 let display = new MazeDisplay(document.getElementById("maze")!, maze);
 let memory = new Memory();
 let stepCount = 0;
@@ -96,7 +97,17 @@ function simulate() {
 document.getElementById("step-button")!.addEventListener("click", step);
 document.getElementById("simulate-button")!.addEventListener("click", simulate);
 
-kruskal(maze, {
-    extraEdgeChance: .1,
+randomDFS(maze, {
+    extraEdgeChance: 0,
 });
 display.update();
+
+let popup = new TestPopup({
+    groups: [{
+        name: "Test 1",
+        cases: [],
+    }, {
+        name: "Hello World!",
+        cases: [],
+    }],
+});

@@ -1,6 +1,8 @@
 
-@use "./maze";
 @use "./code";
+@use "./maze";
+@use "./popup";
+@use "./progress_bar";
 
 body {
     font-family: sans-serif;

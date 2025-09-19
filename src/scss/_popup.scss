@@ -1,0 +1,76 @@
+
+.popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0005;
+    padding: 1em;
+    box-sizing: border-box;
+
+    .popup {
+        border-radius: .3em;
+        overflow: hidden;
+        width: 100%;
+        max-width: 25em;
+        box-shadow: 0 .3em 1em -.6em black;
+
+        .head {
+            background-color: #6a768a;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: .4em;
+            box-sizing: border-box;
+            width: 100%;
+
+            .title {
+                margin: 0;
+                color: white;
+                font-size: 1em;
+            }
+
+            .close-button {
+                position: absolute;
+                top: 50%;
+                right: .5em;
+                translate: 0 -50%;
+                background-color: transparent;
+                cursor: pointer;
+                border-radius: 5em;
+                border: none;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 1.5em;
+                width: 1.5em;
+                
+                & > span {
+                    font-size: 1em;
+                    color: white;
+                }
+
+                &:hover {
+                    background-color: white;
+
+                    & > span {
+                        color: #6a768a;
+                    }
+                }
+            }
+        }
+
+        .body {
+            background-color: white;
+            box-sizing: border-box;
+            width: 100%;
+            padding: 1em 1.3em;
+        }
+    }
+}
