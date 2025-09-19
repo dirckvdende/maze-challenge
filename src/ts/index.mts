@@ -6,6 +6,7 @@ import { maskedEval } from "./util/masked_eval.mjs";
 import { Vec2 } from "./types.mjs";
 import { Memory } from "./memory.mjs";
 import { TestPopup } from "./tests/popup.mjs";
+import { TestCase } from "./tests/types.mjs";
 
 let maze = new Maze(50);
 let display = new MazeDisplay(document.getElementById("maze")!, maze);
@@ -94,20 +95,26 @@ function simulate() {
     doStep();
 }
 
-document.getElementById("step-button")!.addEventListener("click", step);
-document.getElementById("simulate-button")!.addEventListener("click", simulate);
+// document.getElementById("step-button")!.addEventListener("click", step);
+// document.getElementById("simulate-button")!.addEventListener("click", simulate);
 
 randomDFS(maze, {
     extraEdgeChance: 0,
 });
 display.update();
 
-let popup = new TestPopup({
-    groups: [{
-        name: "Test 1",
-        cases: [],
-    }, {
-        name: "Hello World!",
-        cases: [],
-    }],
+let testCases: TestCase[] = [];
+for (let i = 0; i < 100; i++) {
+    let maze = new Maze(25);
+    randomDFS(maze, {extraEdgeChance: .02});
+    testCases.push({name: "Maze", maze});
+}
+document.getElementById("step-button")!.addEventListener("click", () => {
+    let popup = new TestPopup({
+        groups: [{
+            name: "Test 1",
+            cases: testCases,
+        }],
+    });
+    popup.start();
 });

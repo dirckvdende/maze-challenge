@@ -162,7 +162,7 @@ class Simulator {
             while (!this.#maze.finished && steps < options.maxSteps) {
                 this.step();
                 steps++;
-                if (options.stopOnError && this.#hasError())
+                if (options.stopOnError && this.hasError())
                     break;
             }
         } else {
@@ -174,7 +174,7 @@ class Simulator {
                     return;
                 this.step();
                 steps++;
-                if (options.stopOnError && this.#hasError())
+                if (options.stopOnError && this.hasError())
                     return;
                 this.#simTimeout = setTimeout(handler, options.timeout ?? 1);
             }
@@ -223,7 +223,7 @@ class Simulator {
      * this is ErrorLevel.ERROR
      * @returns If an error was thrown as a boolean
      */
-    #hasError(minLevel: ErrorLevel = ErrorLevel.ERROR): boolean {
+    hasError(minLevel: ErrorLevel = ErrorLevel.ERROR): boolean {
         for (let error of this.#stepErrors)
             if (error.level >= minLevel)
                 return true;

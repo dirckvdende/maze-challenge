@@ -1,95 +1,28 @@
 
 export { TestPopup };
-import { TestSuite } from "./types.mjs";
+import { Simulator } from "../maze/sim.mjs";
+import { TestCase, TestGroup, TestSuite } from "./types.mjs";
+import { ProgressBar, ProgressBarPart } from "./progress_bar.mjs";
+
 
 /**
- * Part of a progress bar with a name, background color, and amount (width)
+ * Test result
  */
-type ProgressBarPart = {
-    name: string,
-    color: string,
-    amount: number,
+enum TestResult {
+    SUCCESS,
+    FAIL,
+    ERROR,
+    UNKNOWN,
 };
 
 /**
- * A progress bar display with different colors
+ * Internal test case type that has the test case, group, and test result
  */
-class ProgressBar {
-
-    // The element that contains everything related to the progress bar
-    #element: HTMLElement;
-    // The actual progress bar element
-    #barElement: HTMLElement;
-    // The text above the progress bar
-    #labelElement: HTMLElement;
-    // Progress bar title
-    #title: string;
-
-    /**
-     * Constructor
-     * @param container The container element to put the progress bar in
-     * @param title The title of the progress bar, defaults to "Progress"
-     */
-    constructor(container: HTMLElement, title: string = "Progress") {
-        this.#title = title;
-        ({element: this.#element, barElement: this.#barElement, labelElement:
-        this.#labelElement} = this.#createHTML(container));
-    }
-
-    /**
-     * Title/label of the progress bar
-     */
-    get title() { return this.#title; }
-    set title(value: string) {
-        this.#title = this.#labelElement.innerText = value;
-    }
-
-    /**
-     * Update the progress bar display
-     * @param options Options for the display:
-     * - `total` &mdash; The total "width" of the progress bar, defaults to 1
-     * - `parts` &mdash; List of progress bar parts to display, defaults to []
-     */
-    update(options?: {total?: number, parts?: ProgressBarPart[]}): void {
-        options = {...options};
-        options.total ??= 1;
-        options.parts ??= [];
-        this.#barElement.innerHTML = "";
-        for (let part of options.parts) {
-            let partElement = document.createElement("div");
-            partElement.classList.add("part");
-            partElement.style.backgroundColor = part.color;
-            partElement.style.width = `${part.amount / options.total * 100}%`;
-            this.#barElement.append(partElement);
-        }
-    }
-
-    /**
-     * Remove the progress bar HTML
-     */
-    remove() {
-        this.#element.remove();
-    }
-
-    /**
-     * Create all necessary HTML for the progress bar
-     * @returns Relevant HTML elements that were created
-     */
-    #createHTML(container: HTMLElement): {element: HTMLElement, barElement:
-    HTMLElement, labelElement: HTMLElement} {
-        let element = document.createElement("div");
-        element.classList.add("progress-bar");
-        let labelElement = document.createElement("h3");
-        labelElement.classList.add("label");
-        labelElement.innerText = this.#title;
-        let barElement = document.createElement("div");
-        barElement.classList.add("bar");
-        element.append(labelElement, barElement);
-        container.append(element);
-        return {element, barElement, labelElement};
-    }
-
-}
+type InternalTestCase = {
+    testCase: TestCase,
+    group: TestGroup,
+    result: TestResult,
+};
 
 /**
  * Test popup element, which runs the tests automatically and displays results.
@@ -105,6 +38,12 @@ class TestPopup {
     #body: HTMLElement;
     // Progress bars for the test groups
     #progressBars: ProgressBar[];
+    // Internal linear list of of tests to execute
+    #testsList: InternalTestCase[];
+    // Current (or next) index in the tests list
+    #index: number;
+    // Whether tests are currently running
+    #running: boolean;
 
     /**
      * Constructor
@@ -113,27 +52,43 @@ class TestPopup {
         this.#tests = tests;
         ({container: this.#container, body: this.#body} = this.#createHTML());
         this.#progressBars = this.#createProgressBars();
+        this.#testsList = this.#getTestsList();
+        this.#index = 0;
+        this.#running = false;
     }
 
     /**
      * Close the popup and stop running tests
      */
     close(): void {
-        // TODO
+        this.stop();
+        this.#container.remove();
     }
 
     /**
      * Start running tests
      */
     start(): void {
-        // TODO
+        this.#running = true;
+        let handler = () => {
+            if (this.#index >= this.#testsList.length)
+                return;
+            let internalCase = this.#testsList[this.#index];
+            internalCase.result = this.#runCase(internalCase.testCase);
+            if (!this.#running)
+                return;
+            this.#updateProgressBars();
+            this.#index++;
+            setTimeout(handler, 1);
+        };
+        setTimeout(handler, 1);
     }
 
     /**
      * Pause running tests, can be continued again after running start()
      */
     stop(): void {
-        // TODO
+        this.#running = false;
     }
 
     /**
@@ -175,6 +130,76 @@ class TestPopup {
         for (let group of this.#tests.groups)
             bars.push(new ProgressBar(this.#body, group.name));
         return bars;
+    }
+
+    /**
+     * Get a list of tests from the stored test suite
+     * @returns The list of tests with a test case and a test group
+     */
+    #getTestsList(): InternalTestCase[] {
+        let tests: InternalTestCase[] = [];
+        for (let group of this.#tests.groups)
+            for (let testCase of group.cases)
+                tests.push({testCase, group, result: TestResult.UNKNOWN});
+        return tests;
+    }
+
+    /**
+     * Update the displayed progress bars
+     */
+    #updateProgressBars(): void {
+        let groupIndex: Map<TestGroup, number> = new Map();
+        let parts: ProgressBarPart[][] = [];
+        for (let i = 0; i < this.#tests.groups.length; i++) {
+            groupIndex.set(this.#tests.groups[i], i);
+            parts.push([{
+                name: "Success",
+                color: "#5a9e5e",
+                amount: 0,
+            }, {
+                name: "Failure",
+                color: "#bf4e32",
+                amount: 0,
+            }, {
+                name: "Error",
+                color: "#c9b138",
+                amount: 0,
+            }]);
+        }
+        for (let internalCase of this.#testsList) {
+            if (internalCase.result == TestResult.SUCCESS)
+                parts[groupIndex.get(internalCase.group) ?? 0][0].amount++;
+            if (internalCase.result == TestResult.FAIL)
+                parts[groupIndex.get(internalCase.group) ?? 0][1].amount++;
+            if (internalCase.result == TestResult.ERROR)
+                parts[groupIndex.get(internalCase.group) ?? 0][2].amount++;
+        }
+        for (let i = 0; i < this.#tests.groups.length; i++)
+            this.#progressBars[i].update({
+                total: this.#tests.groups[i].cases.length,
+                parts: parts[i],
+            });
+    }
+
+    /**
+     * Run a given test case
+     * @param testCase The test case to run
+     * @returns The result of the test run
+     */
+    #runCase(testCase: TestCase): TestResult {
+        let maze = (typeof testCase.maze == "function" ? testCase.maze() :
+        testCase.maze);
+        let sim = new Simulator(maze);
+        let code = (document.getElementById("code") as HTMLInputElement).value;
+        sim.stepCode = code;
+        sim.simulate({
+            stopOnError: true,
+        });
+        if (maze.finished)
+            return TestResult.SUCCESS;
+        if (sim.hasError())
+            return TestResult.ERROR;
+        return TestResult.FAIL;
     }
 
 }
