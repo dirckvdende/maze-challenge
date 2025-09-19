@@ -94,46 +94,54 @@ class Simulator {
     step(): void {
         this.#stepErrors = [];
         let hasMoved = false;
-        maskedEval(this.stepCode, {
-            move: (direction: number) => {
-                if (hasMoved) {
-                    this.#stepErrors.push({
-                        level: ErrorLevel.ERROR,
-                        text: "Attempted to use `move` multiple times",
-                    });
-                    return;
-                }
-                hasMoved = true;
-                let delta = this.#directionToDelta(direction);
-                if (delta == null)
-                    return;
-                let moved = this.#maze.move(delta);
-                if (!moved)
-                    this.#stepErrors.push({
-                        level: ErrorLevel.WARNING,
-                        text: "Player could not move because there was a wall",
-                    });
-            },
-            look: (direction: number) => {
-                let playerPos = this.#maze.player;
-                let delta = this.#directionToDelta(direction);
-                if (delta == null)
-                    return MazeSquare.EMPTY;
-                let targetPos = {
-                    x: playerPos.x + delta.x,
-                    y: playerPos.y + delta.y,
-                };
-                return this.#maze.getCell(targetPos);
-            },
-            loadBit: (index: number) =>
-                this.#memory.load(index),
-            storeBit: (index: number, value: boolean) =>
-                this.#memory.store(index, value),
-            loadInt: (index: number, size: number) =>
-                this.#memory.loadUInt(index, size),
-            storeInt: (index: number, size: number, value: number) =>
-                this.#memory.storeUInt(index, size, value),
-        });
+        try {
+            maskedEval(this.stepCode, {
+                move: (direction: number) => {
+                    if (hasMoved) {
+                        this.#stepErrors.push({
+                            level: ErrorLevel.ERROR,
+                            text: "Attempted to use `move` multiple times",
+                        });
+                        return;
+                    }
+                    hasMoved = true;
+                    let delta = this.#directionToDelta(direction);
+                    if (delta == null)
+                        return;
+                    let moved = this.#maze.move(delta);
+                    if (!moved)
+                        this.#stepErrors.push({
+                            level: ErrorLevel.WARNING,
+                            text: "Player could not move because there was " +
+                            "a wall",
+                        });
+                },
+                look: (direction: number) => {
+                    let playerPos = this.#maze.player;
+                    let delta = this.#directionToDelta(direction);
+                    if (delta == null)
+                        return MazeSquare.EMPTY;
+                    let targetPos = {
+                        x: playerPos.x + delta.x,
+                        y: playerPos.y + delta.y,
+                    };
+                    return this.#maze.getCell(targetPos);
+                },
+                loadBit: (index: number) =>
+                    this.#memory.load(index),
+                storeBit: (index: number, value: boolean) =>
+                    this.#memory.store(index, value),
+                loadInt: (index: number, size: number) =>
+                    this.#memory.loadUInt(index, size),
+                storeInt: (index: number, size: number, value: number) =>
+                    this.#memory.storeUInt(index, size, value),
+            });
+        } catch (err) {
+            this.#stepErrors.push({
+                level: ErrorLevel.ERROR,
+                text: String(err),
+            });
+        }
         this.#stats.steps++;
     }
 
