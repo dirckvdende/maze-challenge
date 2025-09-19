@@ -54,6 +54,7 @@ class ProgressBar {
         options.total ??= 1;
         options.parts ??= [];
         this.#barElement.innerHTML = "";
+        let extraTitleText: string[] = [];
         for (let part of options.parts) {
             let partElement = document.createElement("div");
             partElement.classList.add("part");
@@ -61,8 +62,13 @@ class ProgressBar {
             let width = options.total == 0 ? 0 : part.amount / options.total;
             partElement.style.width = `${width * 100}%`;
             partElement.innerText = part.name;
+            if (part.amount > 0)
+                extraTitleText.push(`${part.amount} ${part.name}`);
             this.#barElement.append(partElement);
         }
+        if (extraTitleText.length > 0)
+            this.#labelElement.innerText = (this.#title + " — " +
+            extraTitleText.join(", "));
     }
 
     /**
