@@ -25,14 +25,19 @@
             flex-direction: column;
             position: relative;
             font-size: 1em;
+            max-width: 100%;
+            padding: 0 1em;
+            box-sizing: border-box;
 
             .row {
                 display: flex;
                 flex-direction: row;
+                max-width: 100%;
 
                 .cell {
+                    aspect-ratio: 1 / 1;
                     width: 1em;
-                    height: 1em;
+                    flex-shrink: 1;
                     background-color: purple;
 
                     &.cell-empty { background-color: transparent; }
