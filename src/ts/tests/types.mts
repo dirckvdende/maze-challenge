@@ -3,14 +3,11 @@ export { TestCase, TestGroup, TestSuite };
 import { Maze } from "../maze/maze.mjs";
 
 /**
- * A single test case with name and maze to use. Alternative a function that
- * returns a maze can be assigned, which allows the repeat property to be used
- * to run the test case multiple times, with different mazes
+ * A single test case with name and maze to use
  */
 type TestCase = {
     name: string,
-    maze: Maze | (() => Maze),
-    repeat?: number,
+    maze: Maze,
 };
 
 /**

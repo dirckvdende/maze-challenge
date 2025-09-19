@@ -187,15 +187,13 @@ class TestPopup {
      * @returns The result of the test run
      */
     #runCase(testCase: TestCase): TestResult {
-        let maze = (typeof testCase.maze == "function" ? testCase.maze() :
-        testCase.maze);
-        let sim = new Simulator(maze);
+        let sim = new Simulator(testCase.maze);
         let code = (document.getElementById("code") as HTMLInputElement).value;
         sim.stepCode = code;
         sim.simulate({
             stopOnError: true,
         });
-        if (maze.finished)
+        if (testCase.maze.finished)
             return TestResult.SUCCESS;
         if (sim.hasError())
             return TestResult.ERROR;
