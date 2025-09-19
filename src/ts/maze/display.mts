@@ -79,8 +79,8 @@ class MazeDisplay {
     #updatePlayerPosition(playerElement: HTMLElement): void {
         if (this.maze == undefined)
             throw new Error("Cannot move player on undefined maze");
-        let x = (this.maze.player.x + .5)/ this.maze.width * 100;
-        let y = (this.maze.player.y + .5)/ this.maze.height * 100;
+        let x = (this.maze.player.x + .5) / this.maze.width * 100;
+        let y = (this.maze.player.y + .5) / this.maze.height * 100;
         playerElement.style.left = `${x}%`;
         playerElement.style.top = `${y}%`;
     }

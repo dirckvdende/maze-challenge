@@ -19,6 +19,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        padding: 0 1em;
+        box-sizing: border-box;
         
         & > div {
             display: flex;
@@ -26,7 +28,6 @@
             position: relative;
             font-size: 1em;
             max-width: 100%;
-            padding: 0 1em;
             box-sizing: border-box;
 
             .row {
