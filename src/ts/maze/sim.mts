@@ -48,6 +48,8 @@ class Simulator {
     #stats = {
         steps: 0,
     };
+    // Action performed after every step
+    onStep: () => void;
 
     /**
      * Constructor
@@ -59,6 +61,7 @@ class Simulator {
         this.#stepErrors = [];
         this.#simTimeout = -1;
         this.#memory = new Memory();
+        this.onStep = () => {};
     }
 
     /**
@@ -143,6 +146,7 @@ class Simulator {
             });
         }
         this.#stats.steps++;
+        this.onStep();
     }
 
     /**
