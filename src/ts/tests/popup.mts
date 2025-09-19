@@ -44,6 +44,16 @@ class TestPopup {
     #index: number;
     // Whether tests are currently running
     #running: boolean;
+    // Element with text that indicates the result of the tests
+    #resultElement: HTMLElement;
+    // Whether results have been shown yet
+    #resultsShown: boolean;
+    // Run statistics
+    #stats = {
+        maxBits: 0,
+        totalSteps: 0,
+        totalTime: 0,
+    };
 
     /**
      * Constructor
@@ -52,9 +62,11 @@ class TestPopup {
         this.#tests = tests;
         ({container: this.#container, body: this.#body} = this.#createHTML());
         this.#progressBars = this.#createProgressBars();
+        this.#resultElement = this.#createResultElement();
         this.#testsList = this.#getTestsList();
         this.#index = 0;
         this.#running = false;
+        this.#resultsShown = false;
     }
 
     /**
@@ -71,8 +83,14 @@ class TestPopup {
     start(): void {
         this.#running = true;
         let handler = () => {
-            if (this.#index >= this.#testsList.length)
+            if (this.#index >= this.#testsList.length) {
+                if (this.#resultsShown)
+                    return;
+                this.#resultsShown = true;
+                this.#updateResultElement();
+                this.#addStatsTable();
                 return;
+            }
             let internalCase = this.#testsList[this.#index];
             internalCase.result = this.#runCase(internalCase.testCase);
             if (!this.#running)
@@ -190,14 +208,80 @@ class TestPopup {
         let sim = new Simulator(testCase.maze);
         let code = (document.getElementById("code") as HTMLInputElement).value;
         sim.stepCode = code;
+        let startTime = performance.now();
         sim.simulate({
             stopOnError: true,
         });
+        this.#stats.totalTime += performance.now() - startTime;
+        this.#stats.totalSteps += sim.stats.steps;
+        this.#stats.maxBits = Math.max(this.#stats.maxBits, sim.stats.memoryUsed);
         if (testCase.maze.finished)
             return TestResult.SUCCESS;
         if (sim.hasError())
             return TestResult.ERROR;
         return TestResult.FAIL;
+    }
+
+    /**
+     * Create the large text result element that will show if tests were
+     * successful
+     * @returns The created element
+    */
+   #createResultElement(): HTMLElement {
+       let element = document.createElement("div");
+       element.classList.add("result");
+       element.innerHTML = "RUNNING...";
+       this.#body.append(element);
+       return element;
+    }
+
+    /**
+     * Update the results element content and color according to the tests that
+     * have been run
+     */
+    #updateResultElement(): void {
+        // Not all tests have been run
+        if (this.#index < this.#testsList.length)
+            return;
+        let foundFail = false;
+        for (let internalCase of this.#testsList) {
+            if (internalCase.result == TestResult.UNKNOWN)
+                return;
+            if (internalCase.result != TestResult.SUCCESS) {
+                foundFail = true;
+                break;
+            }
+        }
+        if (foundFail) {
+            this.#resultElement.style.color = "#bf4e32";
+            this.#resultElement.innerText = "FAIL";
+        } else {
+            this.#resultElement.style.color = "#5a9e5e";
+            this.#resultElement.innerText = "SUCCESS";
+        }
+    }
+
+    /**
+     * Add a table with the statistics of the test run
+     */
+    #addStatsTable(): void {
+        let table = document.createElement("table");
+        table.classList.add("stats-table");
+        table.innerHTML = `
+            <tr>
+                <td>Max. memory used</td>
+                <td>${this.#stats.maxBits} bits</td>
+            </tr>
+            <tr>
+                <td>Total steps used</td>
+                <td>${this.#stats.totalSteps}</td>
+            </tr>
+            <tr>
+                <td>Total simulation time</td>
+                <td>${(this.#stats.totalTime / 1000).toFixed(3)} s</td>
+            </tr>
+        `;
+        this.#body.append(table);
     }
 
 }
