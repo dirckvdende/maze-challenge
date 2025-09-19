@@ -24,6 +24,13 @@
 
         .part {
             height: 100%;
+            color: white;
+            font-size: .6em;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+            padding: .2em 0;
+            overflow: hidden;
         }
     }
 }

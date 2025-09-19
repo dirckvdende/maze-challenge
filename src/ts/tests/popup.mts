@@ -157,7 +157,7 @@ class TestPopup {
                 color: "#5a9e5e",
                 amount: 0,
             }, {
-                name: "Failure",
+                name: "Fail",
                 color: "#bf4e32",
                 amount: 0,
             }, {

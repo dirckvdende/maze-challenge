@@ -60,6 +60,7 @@ class ProgressBar {
             partElement.style.backgroundColor = part.color;
             let width = options.total == 0 ? 0 : part.amount / options.total;
             partElement.style.width = `${width * 100}%`;
+            partElement.innerText = part.name;
             this.#barElement.append(partElement);
         }
     }
