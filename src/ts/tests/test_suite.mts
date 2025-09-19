@@ -15,10 +15,22 @@ function getTestSuite(): TestSuite {
             name: "Loopless Kruskal",
             cases: Array.from(new Array(CASES_PER_GROUP), (_val, index):
             TestCase => {
-                let maze = new Maze(49);
+                let size = Math.floor(index / 2) * 2 + 3;
+                let maze = new Maze(size);
                 kruskal(maze);
-                return {name: `Loopless Kruskal ${index}`, maze};
+                return {name: `Loopless Kruskal ${size} x ${size}`, maze};
             }),
+        }, {
+            name: "Looped Kruskal 0.1",
+            cases: Array.from(new Array(CASES_PER_GROUP), (_val, index):
+            TestCase => {
+                let size = Math.floor(index / 2) * 2 + 3;
+                let maze = new Maze(size);
+                kruskal(maze, {
+                    extraEdgeChance: .1,
+                });
+                return {name: `Loopless Kruskal ${size} x ${size}`, maze};
+            })
         }],
     };
 }
