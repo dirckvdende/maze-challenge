@@ -114,7 +114,7 @@ class Simulator {
                         text: "Player could not move because there was a wall",
                     });
             },
-            get: (direction: number) => {
+            look: (direction: number) => {
                 let playerPos = this.#maze.player;
                 let delta = this.#directionToDelta(direction);
                 if (delta == null)
@@ -148,16 +148,22 @@ class Simulator {
      * - `maxSteps` &mdash; Maximum number of steps to perform. Defaults to
      * 10,000 if no timeout is set, and infinity if a timeout is set. Note that
      * the simulation automatically stops if a finish cell is reached
+     * - `stopOnError` &mdash; Whether to stop simulation when an error occurs
+     * (warnings and notes don't have any effect), false by default
      */
-    simulate(options?: {timeout?: number, maxSteps?: number}): void {
+    simulate(options?: {timeout?: number, maxSteps?: number, stopOnError?:
+    boolean}): void {
         // Copy options
         options = {...options};
         options.maxSteps ??= (options.timeout == undefined ? 10000 : Infinity);
+        options.stopOnError ??= false;
         if (options.timeout == undefined) {
             let steps = 0;
             while (!this.#maze.finished && steps < options.maxSteps) {
                 this.step();
                 steps++;
+                if (options.stopOnError && this.#hasError())
+                    break;
             }
         } else {
             let steps = 0;
@@ -168,6 +174,8 @@ class Simulator {
                     return;
                 this.step();
                 steps++;
+                if (options.stopOnError && this.#hasError())
+                    return;
                 this.#simTimeout = setTimeout(handler, options.timeout ?? 1);
             }
             this.#simTimeout = setTimeout(handler, options.timeout);
@@ -206,6 +214,20 @@ class Simulator {
                 });
                 return null;
         }
+    }
+
+    /**
+     * Whether an error was thrown during the last step (only considers errors
+     * by default, not notes and warnings)
+     * @param minLevel Optional minimum level to count as an error, by default
+     * this is ErrorLevel.ERROR
+     * @returns If an error was thrown as a boolean
+     */
+    #hasError(minLevel: ErrorLevel = ErrorLevel.ERROR): boolean {
+        for (let error of this.#stepErrors)
+            if (error.level >= minLevel)
+                return true;
+        return false;
     }
 
 }
