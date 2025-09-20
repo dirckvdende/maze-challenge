@@ -158,6 +158,8 @@ class UI {
      */
     #updateStats(): void {
         document.getElementById("generator-name")!.innerText = this.#generator;
+        document.getElementById("maze-size")!.innerText = (
+        `${this.#mazeSize} x ${this.#mazeSize}`);
         document.getElementById("stat-steps")!.innerText = (
         String(this.#sim.stats.steps));
         document.getElementById("stat-memory")!.innerText = (
