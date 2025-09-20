@@ -53,6 +53,8 @@ class MazeDisplay {
     #addMazeGrid(): void {
         if (this.maze == undefined)
             throw new Error("Cannot add maze grid of undefined maze");
+        this.#container.style.setProperty("--maze-size",
+        String(this.maze.height));
         for (let i = 0; i < this.maze.height; i++) {
             let row = document.createElement("div");
             row.classList.add("row");

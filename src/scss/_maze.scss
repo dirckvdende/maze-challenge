@@ -21,43 +21,55 @@
         align-items: center;
         padding: 0 1em;
         box-sizing: border-box;
+        height: 0;
         
         & > div {
             display: flex;
-            flex-direction: column;
-            position: relative;
-            font-size: 1em;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
             max-width: 100%;
+            aspect-ratio: 1 / 1;
             box-sizing: border-box;
+            
+            & > div {
+                --maze-size: 15;
+                font-size: 1em;
+                position: relative;
+                width: min(100%, calc(1em * var(--maze-size)));
+                max-height: 100%;
+                aspect-ratio: 1 / 1;
 
-            .row {
-                display: flex;
-                flex-direction: row;
-                max-width: 100%;
-
-                .cell {
-                    aspect-ratio: 1 / 1;
-                    width: 1em;
-                    flex-shrink: 1;
-                    background-color: purple;
-
-                    &.cell-empty { background-color: transparent; }
-                    &.cell-wall { background-color: #eee; }
-                    &.cell-finish {
-                        background-color: #ffaa00;
-                        background: linear-gradient(135deg,#ffaa00 0%, #ffaa00 50%, #c28100 50%, #c28100 100%);
+                .row {
+                    display: flex;
+                    flex-direction: row;
+                    max-width: 100%;
+                    height: calc(1 / var(--maze-size) * 100%);
+    
+                    .cell {
+                        width: calc(1 / var(--maze-size) * 100%);
+                        flex-shrink: 1;
+                        background-color: purple;
+    
+                        &.cell-empty { background-color: transparent; }
+                        &.cell-wall { background-color: #eee; }
+                        &.cell-finish {
+                            background-color: #ffaa00;
+                            background: linear-gradient(135deg,#ffaa00 0%, #ffaa00 50%, #c28100 50%, #c28100 100%);
+                        }
                     }
+                }
+    
+                .player {
+                    position: absolute;
+                    width: calc(1.2 / var(--maze-size) * 100%);
+                    height: calc(1.2 / var(--maze-size) * 100%);
+                    background-color: red;
+                    border-radius: .55em;
+                    translate: -50% -50%;
                 }
             }
 
-            .player {
-                position: absolute;
-                width: 1.1em;
-                height: 1.1em;
-                background-color: red;
-                border-radius: .55em;
-                translate: -50% -50%;
-            }
         }
     }
 
