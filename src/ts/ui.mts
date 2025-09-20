@@ -9,7 +9,7 @@ import { kruskal, randomDFS } from "./maze/generators.mjs";
 
 // Min/max maze size
 const MAZE_SIZE_MIN = 5;
-const MAZE_SIZE_MAX = 51;
+const MAZE_SIZE_MAX = 101;
 
 /**
  * Maze generator
