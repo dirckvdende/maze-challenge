@@ -111,6 +111,7 @@ class UI {
         document.getElementById("sim-button")!.style.backgroundColor = "";
         this.#updateMaze();
         this.#updateStats();
+        this.#displayStepErrors();
         this.#display.update();
     }
 
@@ -142,6 +143,9 @@ class UI {
             this.#updateStats();
             this.#display.update({onlyPlayer: true});
             this.#displayStepErrors();
+            if (this.#sim.hasError())
+                (document.getElementById("sim-button")!.style.backgroundColor =
+                "");
         };
         this.#sim.onFinish = () => {
             document.getElementById("sim-button")!.style.backgroundColor = "";
