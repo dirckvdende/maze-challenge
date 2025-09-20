@@ -60,7 +60,10 @@ class UI {
         document.getElementById("regenerate-button")!.addEventListener("click",
         () => this.#update());
         document.getElementById("step-button")!.addEventListener("click",
-        () => this.#sim.step());
+        () => {
+            this.#sim.stepCode = this.#stepCode();
+            this.#sim.step();
+        });
         let simButton = document.getElementById("sim-button")!;
         simButton.addEventListener("click",
         () => {
@@ -69,11 +72,33 @@ class UI {
                 this.#sim.stopSimulating();
             } else {
                 simButton.style.backgroundColor = "red";
+                this.#sim.stepCode = this.#stepCode();
                 this.#sim.simulate({
                     timeout: 50,
                     stopOnError: true,
                 });
             }
+        });
+        document.getElementById("maze-size-plus-button")!.addEventListener(
+        "click", () => {
+            if (this.#mazeSize + 2 > MAZE_SIZE_MAX)
+                return;
+            this.#mazeSize += 2;
+            this.#update();
+        });
+        document.getElementById("maze-size-minus-button")!.addEventListener(
+        "click", () => {
+            if (this.#mazeSize - 2 < MAZE_SIZE_MIN)
+                return;
+            this.#mazeSize -= 2;
+            this.#update();
+        });
+        document.getElementById("generator-button")!.addEventListener("click",
+        () => {
+            let generators = Object.values(Generator);
+            let index = generators.indexOf(this.#generator);
+            index = (index + 1) % generators.length;
+            this.#generator = generators[index];
         });
     }
 
@@ -107,7 +132,10 @@ class UI {
                 break;
         }
         this.#sim = new Simulator(maze);
-        this.#sim.onStep = () => this.#updateStats();
+        this.#sim.onStep = () => {
+            this.#updateStats();
+            this.#display.update({onlyPlayer: true});
+        }
         this.#display.maze = maze;
     }
 
@@ -120,6 +148,14 @@ class UI {
         String(this.#sim.stats.steps));
         document.getElementById("stat-memory")!.innerText = (
         String(this.#sim.stats.memoryUsed));
+    }
+
+    /**
+     * Get the step code entered by the user
+     * @returns The code
+     */
+    #stepCode(): string {
+        return (document.getElementById("code") as HTMLInputElement).value;
     }
 
 }
