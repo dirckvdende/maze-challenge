@@ -19,6 +19,7 @@ enum Generator {
     DFS = "Random DFS",
     LOOPED_KRUSKAL = "Looped Kruskal",
     LOOPED_DFS = "Looped Random DFS",
+    FULL_GRID = "Full Grid",
 };
 
 /**
@@ -131,6 +132,9 @@ class UI {
                 break;
             case Generator.LOOPED_DFS:
                 randomDFS(maze, {extraEdgeChance: .03});
+                break;
+            case Generator.FULL_GRID:
+                kruskal(maze, {extraEdgeChance: 1});
                 break;
         }
         this.#sim = new Simulator(maze);
