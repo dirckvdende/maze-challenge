@@ -1,8 +1,70 @@
 
 .code-container {
+    position: relative;
 
     code-input {
         margin: 0;
         height: 100%;
+    }
+
+    .error-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 50%;
+        overflow-y: auto;
+        box-sizing: border-box;
+        padding: 1em;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        z-index: 100;
+
+        .message {
+            box-sizing: border-box;
+            padding: 1em 1.2em;
+            display: flex;
+            flex-direction: row;
+            border-radius: .3em;
+            align-items: center;
+            margin: .2em 0;
+
+            .icon {
+                flex-shrink: 0;
+                flex-grow: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding-right: 1em;
+
+                & > span {
+                    font-size: 1.5em;
+                    color: inherit;
+                }
+            }
+
+            .text {
+                flex-grow: 1;
+            }
+        }
+
+        .message-info {
+            color: #2b5b8e;
+            background-color: #c9dff1;
+            border: .1em solid #4d93d3;
+        }
+
+        .message-warn {
+            color: #87631a;
+            background-color: #f3e0ba;
+            border: .1em solid #d1ad65;
+        }
+
+        .message-error {
+            color: #871a1a;
+            background-color: #f9bebe;
+            border: .1em solid #e66e6e;
+        }
     }
 }

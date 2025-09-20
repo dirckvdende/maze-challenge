@@ -1,6 +1,6 @@
 
 export { UI };
-import { Simulator } from "./maze/sim.mjs";
+import { ErrorLevel, Simulator } from "./maze/sim.mjs";
 import { getTestSuite } from "./tests/test_suite.mjs";
 import { TestPopup } from "./tests/popup.mjs";
 import { Maze } from "./maze/maze.mjs";
@@ -141,6 +141,7 @@ class UI {
         this.#sim.onStep = () => {
             this.#updateStats();
             this.#display.update({onlyPlayer: true});
+            this.#displayStepErrors();
         };
         this.#sim.onFinish = () => {
             document.getElementById("sim-button")!.style.backgroundColor = "";
@@ -165,6 +166,43 @@ class UI {
      */
     #stepCode(): string {
         return (document.getElementById("code") as HTMLInputElement).value;
+    }
+
+    /**
+     * Display errors/warnings/notes from the last executed step in the example
+     * maze
+     */
+    #displayStepErrors(): void {
+        let container = document.getElementById("error-container")!;
+        container.innerHTML = "";
+        for (let error of this.#sim.stepErrors) {
+            let message = document.createElement("div");
+            message.classList.add("message");
+            let iconContainer = document.createElement("div");
+            iconContainer.classList.add("icon");
+            let icon = document.createElement("span");
+            icon.classList.add("material-symbols-outlined");
+            iconContainer.append(icon);
+            let text = document.createElement("div");
+            text.classList.add("text");
+            text.innerText = error.text;
+            message.append(iconContainer, text);
+            container.append(message);
+            switch (error.level) {
+                case ErrorLevel.NOTE:
+                    message.classList.add("message-info");
+                    icon.innerText = "info";
+                    break;
+                case ErrorLevel.WARNING:
+                    message.classList.add("message-warning");
+                    icon.innerText = "warning";
+                    break;
+                case ErrorLevel.ERROR:
+                    message.classList.add("message-error");
+                    icon.innerText = "error";
+                    break;
+            }
+        }
     }
 
 }

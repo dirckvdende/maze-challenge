@@ -148,6 +148,11 @@ class Simulator {
                 text: String(err),
             });
         }
+        if (!hasMoved)
+            this.#stepErrors.push({
+                level: ErrorLevel.NOTE,
+                text: "No movement was made during the last step",
+            });
         this.#stats.steps++;
         this.onStep();
         if (this.#maze.finished)
