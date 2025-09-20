@@ -16,8 +16,8 @@ const MAZE_SIZE_MAX = 51;
  */
 enum Generator {
     KRUSKAL = "Kruskal",
-    LOOPED_KRUSKAL = "Looped Kruskal",
     DFS = "Random DFS",
+    LOOPED_KRUSKAL = "Looped Kruskal",
     LOOPED_DFS = "Looped Random DFS",
 };
 
@@ -99,6 +99,7 @@ class UI {
             let index = generators.indexOf(this.#generator);
             index = (index + 1) % generators.length;
             this.#generator = generators[index];
+            this.#update();
         });
     }
 
@@ -106,6 +107,7 @@ class UI {
      * Update simulator and display based on saved settings
      */
     #update(): void {
+        document.getElementById("sim-button")!.style.backgroundColor = "";
         this.#updateMaze();
         this.#updateStats();
         this.#display.update();
@@ -135,7 +137,10 @@ class UI {
         this.#sim.onStep = () => {
             this.#updateStats();
             this.#display.update({onlyPlayer: true});
-        }
+        };
+        this.#sim.onFinish = () => {
+            document.getElementById("sim-button")!.style.backgroundColor = "";
+        };
         this.#display.maze = maze;
     }
 

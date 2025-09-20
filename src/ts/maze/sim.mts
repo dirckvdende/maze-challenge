@@ -50,6 +50,9 @@ class Simulator {
     };
     // Action performed after every step
     onStep: () => void;
+    // Action performed once the finish is reached in a step, performed after
+    // onStep
+    onFinish: () => void;
 
     /**
      * Constructor
@@ -61,7 +64,7 @@ class Simulator {
         this.#stepErrors = [];
         this.#simTimeout = -1;
         this.#memory = new Memory();
-        this.onStep = () => {};
+        this.onStep = this.onFinish = () => {};
     }
 
     /**
@@ -147,6 +150,8 @@ class Simulator {
         }
         this.#stats.steps++;
         this.onStep();
+        if (this.#maze.finished)
+            this.onFinish();
     }
 
     /**
