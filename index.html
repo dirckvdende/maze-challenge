@@ -58,18 +58,54 @@
             </div>
         </div>
         <div class="code-container">
-            <code-input language="javascript" placeholder="code..." id="code"></code-input>
+            <code-input language="javascript" placeholder="" id="code"></code-input>
+            <div style="display: none" id="default-code-content">
+// GOAL: Reach the maze finish (gold square) using as little memory
+// between steps as possible.
+// Write code here, which gets executed every simulation step. You
+// have the following available:
+//
+// - move(direction): Move in the given direction (0 = up, 1 = right,
+//                    2 = down, 3 = up). This function can be
+//                    executed at most once per step!
+// - look(direction): Look at the cell in the given direction. Will
+//                    return one of 0 = empty, 1 = wall, 2 = finish.
+//
+// A dynamically-sized memory object is available, it can be accessed
+// with the following:
+//
+// - loadBit(index):            Load the bit stored at the given
+//                              index. Automatically extends memory
+//                              to this index. Bits are zero when
+//                              initialized.
+// - storeBit(index, value):    Store a boolean value at the given
+//                              index. Automatically extends memory
+//                              if needed.
+// - loadInt(index, n):         Loads an n-bit int starting from the
+//                              given index. Automatically extends
+//                              memory if needed.
+// - storeInt(index, n, value): Stored an n-bit int starting from the
+//                              given index. Automatically extends
+//                              memory if needed.
+//
+// It is not allowed to load/store memory between steps in any other
+// way!
+//
+// Once you've got an implementation, press the "Run tests" button to
+// evaluate.
+            </div>
             <script>
                 window.addEventListener("load", () => {
-                    let elt = document.getElementById("code")
-                    let content = localStorage.getItem("code")
-                    if (content == null)
-                        content = ""
-                    elt.value = content
+                    let elt = document.getElementById("code");
+                    let content = localStorage.getItem("code");
+                    if (content == null || content == "")
+                        content = document.getElementById(
+                        "default-code-content").innerText.trim();
+                    elt.value = content;
                     elt.addEventListener("keyup", () => {
-                        localStorage.setItem("code", elt.value)
-                    })
-                })
+                        localStorage.setItem("code", elt.value);
+                    });
+                });
             </script>
             <div class="error-container" id="error-container"></div>
         </div>
