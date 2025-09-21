@@ -149,6 +149,8 @@ class Simulator {
                     this.#memory.loadUInt(index, size),
                 storeInt: (index: number, size: number, value: number) =>
                     this.#memory.storeUInt(index, size, value),
+                size: this.#maze.width,
+                logSize: Math.ceil(Math.log2(this.#maze.width)),
             });
         } catch (err) {
             this.#stepErrors.push({
