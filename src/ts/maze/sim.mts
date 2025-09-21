@@ -106,7 +106,8 @@ class Simulator {
                     if (hasMoved) {
                         this.#stepErrors.push({
                             level: ErrorLevel.ERROR,
-                            text: "Attempted to use `move` multiple times",
+                            text: "Attempted to use move() multiple times in " +
+                            "one step",
                         });
                         return;
                     }
@@ -123,6 +124,13 @@ class Simulator {
                         });
                 },
                 look: (direction: number) => {
+                    if (hasMoved) {
+                        this.#stepErrors.push({
+                            level: ErrorLevel.ERROR,
+                            text: "Cannot use look() after move()",
+                        });
+                        return MazeSquare.EMPTY;
+                    }
                     let playerPos = this.#maze.player;
                     let delta = this.#directionToDelta(direction);
                     if (delta == null)
@@ -151,7 +159,7 @@ class Simulator {
         if (!hasMoved)
             this.#stepErrors.push({
                 level: ErrorLevel.NOTE,
-                text: "No movement was made during the last step",
+                text: "No move() was called during the last step",
             });
         this.#stats.steps++;
         this.onStep();
