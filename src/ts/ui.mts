@@ -46,6 +46,7 @@ class UI {
         this.#display = new MazeDisplay(document.getElementById("maze")!);
         this.#mazeSize = 21;
         this.#initButtons();
+        this.#initFullscreenButton();
         this.#update();
     }
 
@@ -209,6 +210,22 @@ class UI {
                     break;
             }
         }
+    }
+
+    /**
+     * Initialize the fullscreen button at the top right of the maze container
+     */
+    #initFullscreenButton(): void {
+        document.getElementById("fullscreen-button")!.addEventListener("click",
+        () => {
+            if (document.fullscreenElement == null) {
+                document.getElementById("maze-container")!.requestFullscreen({
+                    navigationUI: "hide",
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
     }
 
 }

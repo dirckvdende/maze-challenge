@@ -8,7 +8,7 @@
     <link rel="icon" href="./favicon.png">
 
     <!-- Google icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=close,error,info,warning" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=close,error,fullscreen,info,warning" />
     <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -41,7 +41,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="maze-container">
+        <div class="maze-container" id="maze-container">
             <div class="stats"><span id="generator-name"></span> <span id="maze-size"></span>, Steps: <span id="stat-steps">0</span>, Memory: <span id="stat-memory">0</span> bits</div>
             <div class="maze">
                 <div>
@@ -57,6 +57,7 @@
                 <button id="generator-button">Change generator</button>
                 <button id="tests-button" style="background-color: #4d4;">Run tests</button>
             </div>
+            <button class="fullscreen-button" id="fullscreen-button"><span class="material-symbols-outlined">fullscreen</span></button>
         </div>
         <div class="code-container">
             <code-input language="javascript" placeholder="" id="code"></code-input>
